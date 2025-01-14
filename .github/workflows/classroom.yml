@@ -16,21 +16,27 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.9"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pytest
+
       # Run tests for Exercise 1
       - name: Run tests for Exercise 1
         id: exercise1
         run: pytest -q tests/test_get_sum.py
         continue-on-error: true
-        env:
-          EXERCISE1_RESULTS: ${{ steps.exercise1.outcome }}
 
       # Run tests for Exercise 2
       - name: Run tests for Exercise 2
         id: exercise2
         run: pytest -q tests/test_greet.py
         continue-on-error: true
-        env:
-          EXERCISE2_RESULTS: ${{ steps.exercise2.outcome }}
 
       # Autograding Reporter
       - name: Autograding Reporter
