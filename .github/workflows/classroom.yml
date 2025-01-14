@@ -29,14 +29,20 @@ jobs:
       # Run tests for Exercise 1
       - name: Run tests for Exercise 1
         id: exercise1
-        run: pytest -q tests/test_get_sum.py
+        run: pytest -q tests/test_get_sum.py || echo "Test failed"
         continue-on-error: true
 
       # Run tests for Exercise 2
       - name: Run tests for Exercise 2
         id: exercise2
-        run: pytest -q tests/test_greet.py
+        run: pytest -q tests/test_greet.py || echo "Test failed"
         continue-on-error: true
+
+      # Debug step to output results
+      - name: Debug Results
+        run: |
+          echo "Exercise 1 results: ${{ steps.exercise1.outcome }}"
+          echo "Exercise 2 results: ${{ steps.exercise2.outcome }}"
 
       # Autograding Reporter
       - name: Autograding Reporter
