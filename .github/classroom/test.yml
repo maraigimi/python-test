@@ -1,7 +1,0 @@
-tests:
-  - name: "Exercise 1"
-    run: "pytest -q tests/test_get_sum.py"
-    points: 5
-  - name: "Exercise 2"
-    run: "pytest -q tests/test_greet.py"
-    points: 15

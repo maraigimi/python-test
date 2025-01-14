@@ -32,9 +32,7 @@ jobs:
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
-          runners: |
-            EXERCISE1_RESULTS: ${{ steps.exercise1.outcome }}
-            EXERCISE2_RESULTS: ${{ steps.exercise2.outcome }}
-          points: |
-            EXERCISE1_RESULTS: 5
-            EXERCISE2_RESULTS: 15
+          runners: exercise1,exercise2
+        env:
+          EXERCISE1_RESULTS: ${{ steps.exercise1.outcome }}
+          EXERCISE2_RESULTS: ${{ steps.exercise2.outcome }}
