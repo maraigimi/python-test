@@ -21,14 +21,18 @@ jobs:
         id: exercise1
         run: pytest -q tests/test_get_sum.py
         continue-on-error: true
+        env:
+          EXERCISE1_RESULTS: ${{ steps.exercise1.outcome }}
 
       # Run tests for Exercise 2
       - name: Run tests for Exercise 2
         id: exercise2
         run: pytest -q tests/test_greet.py
         continue-on-error: true
+        env:
+          EXERCISE2_RESULTS: ${{ steps.exercise2.outcome }}
 
-      # Autograding Reporter setup
+      # Autograding Reporter
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
