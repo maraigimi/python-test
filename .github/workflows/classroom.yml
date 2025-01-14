@@ -28,7 +28,7 @@ jobs:
         run: pytest -q tests/test_greet.py
         continue-on-error: true
 
-      # Autograding Reporter
+      # Autograding Reporter setup
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
