@@ -35,17 +35,17 @@ for exercise in exercises:
         id: {exercise_name}
         run: |
           # Set default result (failure)
-          echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise["name"]}","status":"fail","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":0}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise["id"]}_encoded.txt
-          echo "{exercise["id"].upper()}_RESULT=$(cat {exercise["id"]}_encoded.txt)" >> $GITHUB_ENV
+          echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise["name"]}","status":"fail","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":0}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise_name}_encoded.txt
+          echo "{exercise_name.upper()}_RESULT=$(cat {exercise_name}_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
-          pytest -q --json-report --json-report-file={exercise["id"]}.json {exercise["test_file"]}
+          pytest -q --json-report --json-report-file={exercise_name}.json {exercise["test_file"]}
           TEST_RESULT=$?
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{{"version":3,"status":"pass","tests":[{{"name":"{exercise["name"]}","status":"pass","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":{exercise["max_score"]}}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise["id"]}_encoded.txt
-            echo "{exercise["id"].upper()}_RESULT=$(cat {exercise["id"]}_encoded.txt)" >> $GITHUB_ENV
+            echo '{{"version":3,"status":"pass","tests":[{{"name":"{exercise["name"]}","status":"pass","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":{exercise["max_score"]}}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise_name}_encoded.txt
+            echo "{exercise_name.upper()}_RESULT=$(cat {exercise_name}_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
 """
@@ -55,11 +55,12 @@ yaml_content += f"""
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
-          runners: {",".join([exercise["id"] for exercise in exercises])}
+          runners: {",".join([exercise_name for exercise in exercises])}
         env:
 """
 for exercise in exercises:
-    yaml_content += f"          {exercise['id'].upper()}_RESULTS: ${{{{ env.{exercise['id'].upper()}_RESULT }}}}\n"
+    exercise_name = exercise["name"].replace(" ", "_")
+    yaml_content += f"          {exercise_name.upper()}_RESULTS: ${{{{ env.{exercise_name.upper()}_RESULT }}}}\n"
 
 # Save the generated YAML to file
 with open(".github/workflows/classroom.yml", "w") as file:
