@@ -34,7 +34,7 @@ for exercise in exercises:
         id: {exercise['id']}
         run: |
           # Set default result (failure)
-          echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise['name']}","status":"fail","test_code":"","task_id":0,"filename":"{exercise['test_file']}","line_no":4,"duration":1,"score":0}}}], "max_score":{exercise['max_score']}}}' | base64 -w 0 > {exercise['id']}_encoded.txt
+          echo '{"version":3,"status":"fail","tests":[{"name":"{exercise['name']}","status":"fail","test_code":"","task_id":0,"filename":"{exercise['test_file']}","line_no":4,"duration":1,"score":0}], "max_score":{exercise['max_score']}}' | base64 -w 0 > {exercise['id']}_encoded.txt
           echo "{exercise['id'].upper()}_RESULT=$(cat {exercise['id']}_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
@@ -43,7 +43,7 @@ for exercise in exercises:
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{{"version":3,"status":"pass","tests":[{{"name":"{exercise['name']}","status":"pass","test_code":"","task_id":0,"filename":"{exercise['test_file']}","line_no":4,"duration":1,"score":{exercise['max_score']}}}],"max_score":{exercise['max_score']}}}' | base64 -w 0 > {exercise['id']}_encoded.txt
+            echo '{"version":3,"status":"pass","tests":[{"name":"{exercise['name']}","status":"pass","test_code":"","task_id":0,"filename":"{exercise['test_file']}","line_no":4,"duration":1,"score":{exercise['max_score']}}],"max_score":{exercise['max_score']}}' | base64 -w 0 > {exercise['id']}_encoded.txt
             echo "{exercise['id'].upper()}_RESULT=$(cat {exercise['id']}_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
