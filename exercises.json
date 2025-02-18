@@ -7,6 +7,6 @@
   {
     "name": "test greet",
     "test_file": "tests/test_greet.py",
-    "max_score": 15
+    "max_score": 20
   }
 ]
