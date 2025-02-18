@@ -1,12 +1,10 @@
 [
   {
-    "id": "exercise1",
     "name": "test get sum",
     "test_file": "tests/test_get_sum.py",
     "max_score": 5
   },
   {
-    "id": "exercise2",
     "name": "test greet",
     "test_file": "tests/test_greet.py",
     "max_score": 15
