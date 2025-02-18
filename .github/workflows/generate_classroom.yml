@@ -1,13 +1,14 @@
 name: Generate Classroom YAML
 
+permissions:
+  contents: write  # Allows committing changes to content
+  workflows: write  # Allows pushing changes to workflow files
+
 on:
   push:
     paths:
       - 'exercises.json'  # Only trigger when exercises.json changes
   workflow_dispatch:  # Allow manual trigger
-
-permissions:
-  contents: write  # Required for committing the generated YAML
 
 jobs:
   generate-yaml:
