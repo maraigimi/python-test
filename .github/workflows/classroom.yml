@@ -41,7 +41,7 @@ jobs:
         id: test_greet
         run: |
           # Set default result (failure)
-          echo '{"version":3,"status":"fail","tests":[{"name":"test greet","status":"fail","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":0}],"max_score":20}' | base64 -w 0 > test_greet_encoded.txt
+          echo '{"version":3,"status":"fail","tests":[{"name":"test greet","status":"fail","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":0}],"max_score":15}' | base64 -w 0 > test_greet_encoded.txt
           echo "TEST_GREET_RESULT=$(cat test_greet_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
@@ -50,7 +50,7 @@ jobs:
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{"version":3,"status":"pass","tests":[{"name":"test greet","status":"pass","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":20}],"max_score":20}' | base64 -w 0 > test_greet_encoded.txt
+            echo '{"version":3,"status":"pass","tests":[{"name":"test greet","status":"pass","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":15}],"max_score":15}' | base64 -w 0 > test_greet_encoded.txt
             echo "TEST_GREET_RESULT=$(cat test_greet_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
@@ -58,7 +58,7 @@ jobs:
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
-          runners: test_greet,test_greet
+          runners: test_get_sum,test_greet
         env:
           TEST_GET_SUM_RESULTS: ${{ env.TEST_GET_SUM_RESULT }}
           TEST_GREET_RESULTS: ${{ env.TEST_GREET_RESULT }}
