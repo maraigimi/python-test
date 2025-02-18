@@ -30,6 +30,10 @@ jobs:
 # Generate test steps for each exercise
 for exercise in exercises:
     exercise_name = exercise["name"].replace(" ", "_")
+    
+    # Check if 'test_file' exists, otherwise use the default filename
+    test_file = exercise.get("test_file", f"{exercise_name}.py")
+    
     yaml_content += f"""
       - name: Run tests for {exercise["name"]}
         id: {exercise_name}
