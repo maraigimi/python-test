@@ -2,53 +2,57 @@ name: Autograding Tests
 on:
   - push
   - workflow_dispatch
-  - repository_dispatch
+
 permissions:
-  checks: write
   actions: read
   contents: read
 
 jobs:
-  run-autograding-tests:
+  autograding:
     runs-on: ubuntu-latest
-    if: github.actor != 'github-classroom[bot]'
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.9"
-
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest
+          pip install pytest pytest-json-report jq
 
-      # Run tests for Exercise 1
-      - name: Run tests for Exercise 1
-        id: exercise1
-        run: pytest -q tests/test_get_sum.py || echo "Test failed"
-        continue-on-error: true
-
-      # Run tests for Exercise 2
-      - name: Run tests for Exercise 2
-        id: exercise2
-        run: pytest -q tests/test_greet.py || echo "Test failed"
-        continue-on-error: true
-
-      # Debug step to output results
-      - name: Debug Results
+      - name: Run tests for all exercises
+        id: run_tests
         run: |
-          echo "Exercise 1 results: ${{ steps.exercise1.outcome }}"
-          echo "Exercise 2 results: ${{ steps.exercise2.outcome }}"
+          EXERCISES=$(jq -c '.[]' exercises.json)
 
-      # Autograding Reporter
+          for row in $EXERCISES; do
+            ID=$(echo $row | jq -r '.id')
+            TEST_FILE=$(echo $row | jq -r '.test_file')
+            MAX_SCORE=$(echo $row | jq -r '.max_score')
+
+            echo "Running tests for $ID ($TEST_FILE)..."
+
+            # Default failure result
+            FAIL_RESULT="{\"version\":3,\"status\":\"fail\",\"tests\":[{\"name\":\"test\",\"status\":\"fail\",\"test_code\":\"\",\"task_id\":0,\"filename\":\"$TEST_FILE\",\"line_no\":4,\"duration\":1,\"score\":0}],\"max_score\":$MAX_SCORE}"
+            echo $FAIL_RESULT | base64 -w 0 > "${ID}_encoded.txt"
+            echo "${ID}_RESULT=$(cat ${ID}_encoded.txt)" >> $GITHUB_ENV
+
+            # Run pytest
+            pytest -q --json-report --json-report-file="${ID}.json" "$TEST_FILE"
+            TEST_RESULT=$?
+
+            # Overwrite result if test passes
+            if [ $TEST_RESULT -eq 0 ]; then
+              PASS_RESULT="{\"version\":3,\"status\":\"pass\",\"tests\":[{\"name\":\"test\",\"status\":\"pass\",\"test_code\":\"\",\"task_id\":0,\"filename\":\"$TEST_FILE\",\"line_no\":4,\"duration\":1,\"score\":$MAX_SCORE}],\"max_score\":$MAX_SCORE}"
+              echo $PASS_RESULT | base64 -w 0 > "${ID}_encoded.txt"
+              echo "${ID}_RESULT=$(cat ${ID}_encoded.txt)" >> $GITHUB_ENV
+            fi
+          done
+        continue-on-error: true
+
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
           runners: exercise1,exercise2
         env:
-          EXERCISE1_RESULTS: ${{ steps.exercise1.outcome }}
-          EXERCISE2_RESULTS: ${{ steps.exercise2.outcome }}
+          EXERCISE1_RESULT: ${{ env.EXERCISE1_RESULT }}
+          EXERCISE2_RESULT: ${{ env.EXERCISE2_RESULT }}
