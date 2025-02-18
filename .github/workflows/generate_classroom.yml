@@ -1,9 +1,5 @@
 name: Generate Classroom YAML
 
-permissions:
-  contents: write  # Allows committing changes to content
-  workflows: write  # Allows pushing changes to workflow files
-
 on:
   push:
     paths:
