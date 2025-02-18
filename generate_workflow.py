@@ -58,7 +58,7 @@ yaml_content += f"""
         env:
 """
 for exercise in exercises:
-    yaml_content += f"          {exercise['id'].upper()}_RESULT: ${{{{ env.{exercise['id'].upper()}_RESULT }}}}\n"
+    yaml_content += f"          {exercise['id'].upper()}_RESULTS: ${{{{ env.{exercise['id'].upper()}_RESULT }}}}\n"
 
 # Save the generated YAML to file
 with open(".github/workflows/classroom.yml", "w") as file:
