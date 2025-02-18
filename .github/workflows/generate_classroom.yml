@@ -17,7 +17,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # Allows commit access
+          token: ${{ secrets.GH_WORKFLOW_TOKEN }}  # Allows commit access
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -37,3 +37,5 @@ jobs:
           git add .github/workflows/classroom.yml
           git diff --quiet && git diff --staged --quiet || git commit -m "Auto-generate classroom.yml"
           git push
+        env:
+          GH_WORKFLOW_TOKEN: ${{ secrets.GH_WORKFLOW_TOKEN }}
