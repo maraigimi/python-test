@@ -19,11 +19,11 @@ jobs:
           python -m pip install --upgrade pip
           pip install pytest pytest-json-report
 
-      - name: Run tests for exercise1
+      - name: Run tests for test get sum
         id: exercise1
         run: |
           # Set default result (failure)
-          echo '{"version":3,"status":"fail","tests":[{"name":"test","status":"fail","test_code":"","task_id":0,"filename":"tests/test_get_sum.py","line_no":4,"duration":1,"score":0}],"max_score":5}' | base64 -w 0 > exercise1_encoded.txt
+          echo '{"version":3,"status":"fail","tests":[{"name":"test get sum","status":"fail","test_code":"","task_id":0,"filename":"tests/test_get_sum.py","line_no":4,"duration":1,"score":0}],"max_score":5}' | base64 -w 0 > exercise1_encoded.txt
           echo "EXERCISE1_RESULT=$(cat exercise1_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
@@ -32,16 +32,16 @@ jobs:
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{"version":3,"status":"pass","tests":[{"name":"test","status":"pass","test_code":"","task_id":0,"filename":"tests/test_get_sum.py","line_no":4,"duration":1,"score":5}],"max_score":5}' | base64 -w 0 > exercise1_encoded.txt
+            echo '{"version":3,"status":"pass","tests":[{"name":"test get sum","status":"pass","test_code":"","task_id":0,"filename":"tests/test_get_sum.py","line_no":4,"duration":1,"score":5}],"max_score":5}' | base64 -w 0 > exercise1_encoded.txt
             echo "EXERCISE1_RESULT=$(cat exercise1_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
 
-      - name: Run tests for exercise2
+      - name: Run tests for test greet
         id: exercise2
         run: |
           # Set default result (failure)
-          echo '{"version":3,"status":"fail","tests":[{"name":"test","status":"fail","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":0}],"max_score":20}' | base64 -w 0 > exercise2_encoded.txt
+          echo '{"version":3,"status":"fail","tests":[{"name":"test greet","status":"fail","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":0}],"max_score":15}' | base64 -w 0 > exercise2_encoded.txt
           echo "EXERCISE2_RESULT=$(cat exercise2_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
@@ -50,7 +50,7 @@ jobs:
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{"version":3,"status":"pass","tests":[{"name":"test","status":"pass","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":20}],"max_score":20}' | base64 -w 0 > exercise2_encoded.txt
+            echo '{"version":3,"status":"pass","tests":[{"name":"test greet","status":"pass","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":15}],"max_score":15}' | base64 -w 0 > exercise2_encoded.txt
             echo "EXERCISE2_RESULT=$(cat exercise2_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
@@ -60,5 +60,5 @@ jobs:
         with:
           runners: exercise1,exercise2
         env:
-          EXERCISE1_RESULT: ${{ env.EXERCISE1_RESULT }}
-          EXERCISE2_RESULT: ${{ env.EXERCISE2_RESULT }}
+          EXERCISE1_RESULTS: ${{ env.EXERCISE1_RESULT }}
+          EXERCISE2_RESULTS: ${{ env.EXERCISE2_RESULT }}
