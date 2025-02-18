@@ -9,6 +9,6 @@
     "id": "exercise2",
     "name": "test greet",
     "test_file": "tests/test_greet.py",
-    "max_score": 20
+    "max_score": 15
   }
 ]
