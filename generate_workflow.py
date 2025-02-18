@@ -32,7 +32,7 @@ for exercise in exercises:
     exercise_name = exercise["name"].replace(" ", "_")
     
     # Check if 'test_file' exists, otherwise use the default filename
-    test_file = exercise.get("test_file", f"tests/{exercise_name}.py")
+    test_file = exercise.get("test_file", f"tests/{exercise_name.lower()}.py")
     
     yaml_content += f"""
       - name: Run tests for {exercise["name"]}
