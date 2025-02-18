@@ -29,7 +29,7 @@ jobs:
 
 # Generate test steps for each exercise
 for exercise in exercises:
-    exercise_name = {exercise["name"]}.replace(" ", "_")
+    exercise_name = exercise["name"].replace(" ", "_")
     yaml_content += f"""
       - name: Run tests for {exercise["name"]}
         id: {exercise["name"]}
