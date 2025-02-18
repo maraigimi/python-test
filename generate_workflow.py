@@ -30,21 +30,21 @@ jobs:
 # Generate test steps for each exercise
 for exercise in exercises:
     yaml_content += f"""
-      - name: Run tests for {exercise["id"]}
-        id: {exercise["id"]}
+      - name: Run tests for {exercise['name']}  # Use the 'name' field here
+        id: {exercise['id']}
         run: |
           # Set default result (failure)
-          echo '{{"version":3,"status":"fail","tests":[{{"name":"test","status":"fail","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":0}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise["id"]}_encoded.txt
-          echo "{exercise["id"].upper()}_RESULT=$(cat {exercise["id"]}_encoded.txt)" >> $GITHUB_ENV
+          echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise['name']}","status":"fail","test_code":"","task_id":0,"filename":"{exercise['test_file']}","line_no":4,"duration":1,"score":0}}}], "max_score":{exercise['max_score']}}}' | base64 -w 0 > {exercise['id']}_encoded.txt
+          echo "{exercise['id'].upper()}_RESULT=$(cat {exercise['id']}_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
-          pytest -q --json-report --json-report-file={exercise["id"]}.json {exercise["test_file"]}
+          pytest -q --json-report --json-report-file={exercise['id']}.json {exercise['test_file']}
           TEST_RESULT=$?
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{{"version":3,"status":"pass","tests":[{{"name":"test","status":"pass","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":{exercise["max_score"]}}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise["id"]}_encoded.txt
-            echo "{exercise["id"].upper()}_RESULT=$(cat {exercise["id"]}_encoded.txt)" >> $GITHUB_ENV
+            echo '{{"version":3,"status":"pass","tests":[{{"name":"{exercise['name']}","status":"pass","test_code":"","task_id":0,"filename":"{exercise['test_file']}","line_no":4,"duration":1,"score":{exercise['max_score']}}}],"max_score":{exercise['max_score']}}}' | base64 -w 0 > {exercise['id']}_encoded.txt
+            echo "{exercise['id'].upper()}_RESULT=$(cat {exercise['id']}_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
 """
@@ -54,7 +54,7 @@ yaml_content += f"""
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
-          runners: {",".join([exercise["id"] for exercise in exercises])}
+          runners: {",".join([exercise['id'] for exercise in exercises])}
         env:
 """
 for exercise in exercises:
