@@ -2,7 +2,7 @@
 # Find the sum of the given numbers.
 def get_sum(a, b):
     # To be implemented
-    return a+b
+    return 0
 
 # ====================================================
 
@@ -10,7 +10,7 @@ def get_sum(a, b):
 # Greet the user with their name.
 def greet(name):
     # To be implemented
-    print("Hello, user !")
+    print("Hello,", name, "!")
 
 if __name__ == '__main__':
     print("Exercise 1")
