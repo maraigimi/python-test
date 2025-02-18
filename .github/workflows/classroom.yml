@@ -17,36 +17,42 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install pytest pytest-json-report jq
+          pip install pytest pytest-json-report
 
-      - name: Run tests for all exercises
-        id: run_tests
+      - name: Run tests for exercise1
+        id: exercise1
         run: |
-          EXERCISES=$(jq -c '.[]' exercises.json)
+          # Set default result (failure)
+          echo '{"version":3,"status":"fail","tests":[{"name":"test","status":"fail","test_code":"","task_id":0,"filename":"tests/test_get_sum.py","line_no":4,"duration":1,"score":0}],"max_score":5}' | base64 -w 0 > exercise1_encoded.txt
+          echo "EXERCISE1_RESULT=$(cat exercise1_encoded.txt)" >> $GITHUB_ENV
 
-          for row in $EXERCISES; do
-            ID=$(echo $row | jq -r '.id')
-            TEST_FILE=$(echo $row | jq -r '.test_file')
-            MAX_SCORE=$(echo $row | jq -r '.max_score')
+          # Run pytest
+          pytest -q --json-report --json-report-file=exercise1.json tests/test_get_sum.py
+          TEST_RESULT=$?
 
-            echo "Running tests for $ID ($TEST_FILE)..."
+          # Overwrite result on success
+          if [ $TEST_RESULT -eq 0 ]; then
+            echo '{"version":3,"status":"pass","tests":[{"name":"test","status":"pass","test_code":"","task_id":0,"filename":"tests/test_get_sum.py","line_no":4,"duration":1,"score":5}],"max_score":5}' | base64 -w 0 > exercise1_encoded.txt
+            echo "EXERCISE1_RESULT=$(cat exercise1_encoded.txt)" >> $GITHUB_ENV
+          fi
+        continue-on-error: true
 
-            # Default failure result
-            FAIL_RESULT="{\"version\":3,\"status\":\"fail\",\"tests\":[{\"name\":\"test\",\"status\":\"fail\",\"test_code\":\"\",\"task_id\":0,\"filename\":\"$TEST_FILE\",\"line_no\":4,\"duration\":1,\"score\":0}],\"max_score\":$MAX_SCORE}"
-            echo $FAIL_RESULT | base64 -w 0 > "${ID}_encoded.txt"
-            echo "${ID}_RESULT=$(cat ${ID}_encoded.txt)" >> $GITHUB_ENV
+      - name: Run tests for exercise2
+        id: exercise2
+        run: |
+          # Set default result (failure)
+          echo '{"version":3,"status":"fail","tests":[{"name":"test","status":"fail","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":0}],"max_score":20}' | base64 -w 0 > exercise2_encoded.txt
+          echo "EXERCISE2_RESULT=$(cat exercise2_encoded.txt)" >> $GITHUB_ENV
 
-            # Run pytest
-            pytest -q --json-report --json-report-file="${ID}.json" "$TEST_FILE"
-            TEST_RESULT=$?
+          # Run pytest
+          pytest -q --json-report --json-report-file=exercise2.json tests/test_greet.py
+          TEST_RESULT=$?
 
-            # Overwrite result if test passes
-            if [ $TEST_RESULT -eq 0 ]; then
-              PASS_RESULT="{\"version\":3,\"status\":\"pass\",\"tests\":[{\"name\":\"test\",\"status\":\"pass\",\"test_code\":\"\",\"task_id\":0,\"filename\":\"$TEST_FILE\",\"line_no\":4,\"duration\":1,\"score\":$MAX_SCORE}],\"max_score\":$MAX_SCORE}"
-              echo $PASS_RESULT | base64 -w 0 > "${ID}_encoded.txt"
-              echo "${ID}_RESULT=$(cat ${ID}_encoded.txt)" >> $GITHUB_ENV
-            fi
-          done
+          # Overwrite result on success
+          if [ $TEST_RESULT -eq 0 ]; then
+            echo '{"version":3,"status":"pass","tests":[{"name":"test","status":"pass","test_code":"","task_id":0,"filename":"tests/test_greet.py","line_no":4,"duration":1,"score":20}],"max_score":20}' | base64 -w 0 > exercise2_encoded.txt
+            echo "EXERCISE2_RESULT=$(cat exercise2_encoded.txt)" >> $GITHUB_ENV
+          fi
         continue-on-error: true
 
       - name: Autograding Reporter
