@@ -31,7 +31,7 @@ jobs:
 for exercise in exercises:
     yaml_content += f"""
       - name: Run tests for {exercise["name"]}
-        id: {exercise["id"]}
+        id: {exercise["name"]}
         run: |
           # Set default result (failure)
           echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise["name"]}","status":"fail","test_code":"","task_id":0,"filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":0}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise["id"]}_encoded.txt
