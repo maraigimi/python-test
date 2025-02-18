@@ -55,7 +55,7 @@ yaml_content += f"""
       - name: Autograding Reporter
         uses: classroom-resources/autograding-grading-reporter@v1
         with:
-          runners: {",".join([exercise_name for exercise in exercises])}
+          runners: {",".join([exercise['name'].replace(" ", "_") for exercise in exercises])}
         env:
 """
 for exercise in exercises:
