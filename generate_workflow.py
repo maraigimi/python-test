@@ -39,16 +39,16 @@ for exercise in exercises:
         id: {exercise_name}
         run: |
           # Set default result (failure)
-          echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise["name"]}","status":"fail","test_code":"","task_id":"{exercise_name}","filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":0}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise_name}_encoded.txt
+          echo '{{"version":3,"status":"fail","tests":[{{"name":"{exercise["name"]}","status":"fail","test_code":"","task_id":"{exercise_name}","filename":"{test_file}","line_no":4,"duration":1,"score":0}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise_name}_encoded.txt
           echo "{exercise_name.upper()}_RESULT=$(cat {exercise_name}_encoded.txt)" >> $GITHUB_ENV
 
           # Run pytest
-          pytest -q --json-report --json-report-file={exercise_name}.json {exercise["test_file"]}
+          pytest -q --json-report --json-report-file={exercise_name}.json {test_file}
           TEST_RESULT=$?
 
           # Overwrite result on success
           if [ $TEST_RESULT -eq 0 ]; then
-            echo '{{"version":3,"status":"pass","tests":[{{"name":"{exercise["name"]}","status":"pass","test_code":"","task_id":"{exercise_name}","filename":"{exercise["test_file"]}","line_no":4,"duration":1,"score":{exercise["max_score"]}}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise_name}_encoded.txt
+            echo '{{"version":3,"status":"pass","tests":[{{"name":"{exercise["name"]}","status":"pass","test_code":"","task_id":"{exercise_name}","filename":"{test_file}","line_no":4,"duration":1,"score":{exercise["max_score"]}}}],"max_score":{exercise["max_score"]}}}' | base64 -w 0 > {exercise_name}_encoded.txt
             echo "{exercise_name.upper()}_RESULT=$(cat {exercise_name}_encoded.txt)" >> $GITHUB_ENV
           fi
         continue-on-error: true
